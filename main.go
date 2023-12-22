@@ -261,22 +261,35 @@ func cariBelanjaan(app *ShoppingApp) {
 	fmt.Printf("│               CARI BELANJAAN                   │\n")
 	fmt.Printf("└────────────────────────────────────────────────┘\n\n")
 	fmt.Print("Masukkan nama barang: ")
-	fmt.Println("")
 	fmt.Scanln(&searchItem)
+
+	// Slice untuk menyimpan belanjaan yang cocok dengan kriteria pencarian
+	var matchingItems []ShoppingItem
 
 	for _, item := range app.ShoppingList {
 		if strings.Contains(strings.ToLower(item.Name), strings.ToLower(searchItem)) {
-			fmt.Println("Belanjaan ditemukan!")
-			fmt.Printf("Nama Barang: %s\n", item.Name)
-			fmt.Printf("Jumlah Barang: %d\n", item.Quantity)
-			fmt.Printf("Kategori Barang: %s\n", item.Category)
-			fmt.Println("")
-			return
+			// Menambahkan barang yang cocok ke dalam slice
+			matchingItems = append(matchingItems, item)
 		}
 	}
-	fmt.Println("Belanjaan tidak ditemukan.")
-}
 
+	if len(matchingItems) > 0 {
+		fmt.Println("")
+		fmt.Println("Belanjaan ditemukan!")
+
+		// Menampilkan semua belanjaan yang cocok
+		for _, matchedItem := range matchingItems {
+			fmt.Println("")
+			fmt.Printf("Nama Barang: %s\n", matchedItem.Name)
+			fmt.Printf("Jumlah Barang: %d\n", matchedItem.Quantity)
+			fmt.Printf("Kategori Barang: %s\n", matchedItem.Category)
+			fmt.Printf("Harga Barang: %.2f\n", matchedItem.Price)
+			fmt.Println("")
+		}
+	} else {
+		fmt.Println("Belanjaan tidak ditemukan.")
+	}
+}
 // 6. PILIHAN UNTUK MENGHAPUS BELANJAAN
 func hapusBelanjaan(app *ShoppingApp) {
 	clearScreen()
@@ -330,7 +343,7 @@ func getCategoryAlias(app *ShoppingApp, categoryName string) string {
 	return ""
 }
 
-// FUNGSI UNTUK MENYIMPAN DATA APLIKASI KE FILE JSON
+// Fungsi untuk menyimpan data aplikasi ke file JSON
 func saveAppData(app ShoppingApp) {
 	data, err := json.MarshalIndent(app, "", "  ")
 	if err != nil {
@@ -344,7 +357,7 @@ func saveAppData(app ShoppingApp) {
 	}
 }
 
-// FUNGSI UNTUK MEMUAT DATA APLIKASI DARI FILE JSON
+// Fungsi untuk memuat data aplikasi dari file JSON
 func loadAppData() ShoppingApp {
 	data, err := ioutil.ReadFile("data-kategori.json")
 	if err != nil {
